@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { WorkspaceService } from "../services/WorkspaceService";
+import { AddMemberDto } from "../dtos/AddMember.dto";
 
 const workspaceService = new WorkspaceService();
 
@@ -31,3 +32,18 @@ export const getWorkspaces = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const inviteUser = async (req: Request, res: Response) => {
+    try {
+        const { workspaceId } = req.params;
+        const result = await workspaceService.addMember(req.user!.userId, workspaceId, req.body);
+
+        res.status(200).json({
+            success: true,
+            message: "Member added successfully",
+            data: result
+        });
+    } catch (error: any) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+}

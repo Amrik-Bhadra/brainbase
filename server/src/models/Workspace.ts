@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 
 import { User } from "./User";
+import { Note } from "./Notes";
+import { WorkspaceMember } from "./WorkspaceMember";
 
 @Entity()
 export class Workspace {
@@ -20,6 +22,12 @@ export class Workspace {
     
     @Column()
     ownerId: string;
+
+    @OneToMany(() => Note, (note) => note.workspace)
+    notes: Note[];
+
+    @OneToMany(() => WorkspaceMember, (member) => member.workspace)
+    members: WorkspaceMember[];
 
     @CreateDateColumn()
     createdAt: Date;

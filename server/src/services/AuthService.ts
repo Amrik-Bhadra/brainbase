@@ -1,5 +1,5 @@
 import { AppDataSource } from "../data-source";
-import { User, UserRole } from "../models/User";
+import { User, SystemRole } from "../models/User";
 import { RefreshToken } from "../models/RefreshToken";
 import { CreateUserDto } from "../dtos/CreateUser.dto";
 import { LoginUserDto } from "../dtos/LoginUser.dto";
@@ -28,7 +28,7 @@ export class AuthService {
             lastName,
             email,
             password: hashedPassword,
-            role: UserRole.VIEWER // Default role
+            role: SystemRole.USER // Default role
         });
 
         // Save to DB

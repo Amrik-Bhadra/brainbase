@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from './routes/auth.routes';
 import workspaceRoutes from './routes/workspace.routes';
+import noteRoutes from './routes/note.routes';
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
@@ -33,7 +34,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/workspace', workspaceRoutes);
-
+app.use('/api/notes', noteRoutes);
 
 // Basic route
 app.get('/health', (req: Request, res: Response) => {

@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { RefreshToken } from "./RefreshToken";
 import { Workspace } from "./Workspace";
+import { WorkspaceMember } from "./WorkspaceMember";
 
 // Define roles to control access later
-export enum UserRole {
-    ADMIN = "admin",
-    EDITOR = "editor",
-    VIEWER = "viewer"
+export enum SystemRole {
+    USER = "user",           // Standard user (Can own workspaces)
+    SYSTEM_ADMIN = "admin"   // Superuser (Can delete other users, etc.)
 }
 
 @Entity()
@@ -28,16 +28,19 @@ export class User {
 
     @Column({
         type: "enum",
-        enum: UserRole,
-        default: UserRole.VIEWER
+        enum: SystemRole,
+        default: SystemRole.USER
     })
-    role: UserRole;
+    role: SystemRole;
 
     @OneToMany(() => Workspace, (workspace) => workspace.owner)
     workspaces: Workspace[]
 
     @OneToMany(() => RefreshToken, (token) => token.user)
     refreshTokens: RefreshToken[];
+
+    @OneToMany(() => WorkspaceMember, (member) => member.user)
+    memberships: WorkspaceMember[];
 
     @CreateDateColumn()
     createdAt: Date;

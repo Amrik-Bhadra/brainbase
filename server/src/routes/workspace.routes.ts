@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createWorkspace, getWorkspaces } from "../controllers/WorkspaceController";
+import { createWorkspace, getWorkspaces, inviteUser } from "../controllers/WorkspaceController";
 import { authenticate } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validation.middleware";
 import { body } from "express-validator";
@@ -16,5 +16,8 @@ router.post("/", authenticate, validate(createValidators), createWorkspace);
 
 // GET /api/workspaces (Protected)
 router.get("/", authenticate, getWorkspaces);
+
+// POST /api/workspaces/:workspaceId/members
+router.post("/:workspaceId/members", authenticate, inviteUser);
 
 export default router;

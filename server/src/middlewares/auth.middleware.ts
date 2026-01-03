@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { UserRole } from "../models/User";
+import { SystemRole } from "../models/User";
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
     // Get the token from Header
@@ -23,7 +23,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET || "fallback_secret_do_not_use"
-        ) as { userId: string; role: UserRole };
+        ) as { userId: string; role: SystemRole };
 
         // Attach to Request
         req.user = {
