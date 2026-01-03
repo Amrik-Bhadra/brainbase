@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { RefreshToken } from "./RefreshToken";
+import { Workspace } from "./Workspace";
 
 // Define roles to control access later
 export enum UserRole {
@@ -31,6 +32,9 @@ export class User {
         default: UserRole.VIEWER
     })
     role: UserRole;
+
+    @OneToMany(() => Workspace, (workspace) => workspace.owner)
+    workspaces: Workspace[]
 
     @OneToMany(() => RefreshToken, (token) => token.user)
     refreshTokens: RefreshToken[];

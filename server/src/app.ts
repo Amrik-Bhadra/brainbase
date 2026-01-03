@@ -6,6 +6,7 @@ import path from 'path';
 import cookieParser from "cookie-parser";
 
 import authRoutes from './routes/auth.routes';
+import workspaceRoutes from './routes/workspace.routes';
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
@@ -31,6 +32,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/workspace', workspaceRoutes);
 
 
 // Basic route
