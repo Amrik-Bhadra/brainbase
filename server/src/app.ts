@@ -3,11 +3,12 @@ import helmet from "helmet"
 import cors from "cors"
 import dotenv from "dotenv"
 import path from 'path';
+import authRoutes from './routes/auth.routes';
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 // load env vars
-dotenv.config()
+dotenv.config();
 
 const app: Application = express();
 
@@ -22,8 +23,11 @@ app.use(cors({
 }));
 
 // parse JSON bodies
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 
 // Basic route

@@ -8,7 +8,14 @@
     "esModuleInterop": true,        /* Enables emit interoperability between CommonJS and ES Modules */
     "skipLibCheck": true,           /* Skip type checking of declaration files */
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+
+    // ADD THESE TWO LINES (Crucial for TypeORM)
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // ADD THIS LINE (To fix the "initializer" errors globally)
+    "strictPropertyInitialization": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
