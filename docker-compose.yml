@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: brainbase_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+
+# version: '3.8'
+
+# services:
+#   db:
+#     image: postgres:16-alpine
+#     container_name: brainbase_db
+#     restart: always
+#     environment:
+#       POSTGRES_USER: brainbase_admin      # Hardcoded
+#       POSTGRES_PASSWORD: securepassword123 # Hardcoded
+#       POSTGRES_DB: brainbase_db           # Hardcoded
+#     ports:
+#       - "5440:5432"
+#     volumes:
+#       - pgdata_v3:/var/lib/postgresql/data # New volume name to force fresh start
+
+# volumes:
+#   pgdata_v3: # Match the name above
