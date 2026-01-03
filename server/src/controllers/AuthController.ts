@@ -3,6 +3,13 @@ import { AuthService } from "../services/AuthService";
 
 const authService = new AuthService();
 
+const COOKIE_OPTIONS = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict' as const,
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+};
+
 export const register = async (req: Request, res: Response) => {
     try {
         const user = await authService.registerUser(req.body);
@@ -16,9 +23,9 @@ export const register = async (req: Request, res: Response) => {
             data: userWithoutPassword
         })
     } catch (error: any) {
-        if(error.message === "User already exists with this email"){
+        if (error.message === "User already exists with this email") {
             res.status(409).json({ success: false, message: error.message });
-        }else{
+        } else {
             console.error(error);
             res.status(500).json({ success: false, message: "Internal Server Error" });
         }
@@ -27,21 +34,48 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try {
-        const { user, token } = await authService.loginUser(req.body);
+        const { user, accessToken, refreshToken } = await authService.loginUser(req.body);
+
+        // send refresh token as cookie
+        res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
+
         const { password, ...userWithoutPassword } = user;
 
         res.status(200).json({
             success: true,
             message: 'Login successful',
-            data: {
-                user: userWithoutPassword,
-                token
-            }
+            accessToken,
+            user: userWithoutPassword
         });
     } catch (error) {
         res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 }
+
+export const refresh = async (req: Request, res: Response) => {
+    try {
+        // Get token from Cookie
+        const refreshToken = req.cookies.refreshToken;
+
+        if(!refreshToken){
+            return res.status(401).json({ success: false, message: "No refresh token" });
+        }
+
+        const tokens = await authService.refreshToken(refreshToken);
+
+        // send new refresh token as cookie
+        res.cookie('refreshToken', tokens.newRefreshToken, COOKIE_OPTIONS);
+
+        res.status(200).json({
+            success: true,
+            accessToken: tokens.newAccessToken
+        });
+
+    } catch (error: any) {
+        res.status(401).json({ success: false, message: "Invalid refresh token" });
+    }
+}
+
 
 export const getProfile = async (req: Request, res: Response) => {
     res.status(200).json({
@@ -50,3 +84,24 @@ export const getProfile = async (req: Request, res: Response) => {
         user: req.user
     });
 };
+
+export const logout = async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+
+    // if there is a token in the cookie, remove it from DB
+    if(refreshToken){
+        try {
+            await authService.logout(refreshToken);
+        } catch (error: any) {
+            console.error("Logout error:", error);
+        }
+    }
+
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+    });
+
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+}

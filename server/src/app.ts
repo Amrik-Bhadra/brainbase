@@ -3,6 +3,8 @@ import helmet from "helmet"
 import cors from "cors"
 import dotenv from "dotenv"
 import path from 'path';
+import cookieParser from "cookie-parser";
+
 import authRoutes from './routes/auth.routes';
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -25,6 +27,7 @@ app.use(cors({
 // parse JSON bodies
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);

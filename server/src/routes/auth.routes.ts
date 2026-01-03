@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, getProfile } from "../controllers/AuthController";
+import { register, login, getProfile, refresh, logout } from "../controllers/AuthController";
 import { authenticate } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validation.middleware";
 import { registerValidators, loginValidators } from "../dtos/auth.validators";
@@ -14,5 +14,8 @@ router.post("/login", validate(loginValidators), login)
 
 // GET http://localhost:3000/api/auth/me
 router.get("/me", authenticate, getProfile);
+
+router.post("/refresh", refresh);
+router.post("/logout", logout);
 
 export default router;
