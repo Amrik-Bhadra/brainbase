@@ -24,3 +24,29 @@ export const register = async (req: Request, res: Response) => {
         }
     }
 }
+
+export const login = async (req: Request, res: Response) => {
+    try {
+        const { user, token } = await authService.loginUser(req.body);
+        const { password, ...userWithoutPassword } = user;
+
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            data: {
+                user: userWithoutPassword,
+                token
+            }
+        });
+    } catch (error) {
+        res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+}
+
+export const getProfile = async (req: Request, res: Response) => {
+    res.status(200).json({
+        success: true,
+        message: "This is protected route",
+        user: req.user
+    });
+};
